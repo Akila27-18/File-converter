@@ -1,0 +1,40 @@
+
+{% extends 'base.html' %}
+{% block content %}
+<div class="col-md-4">
+  <div class="card shadow border-primary rounded-4 h-100">
+    <div class="card-body text-center">
+      <h5 class="fw-bold">Pro</h5>
+      <h2 class="my-3">$9 / mo</h2>
+
+      <ul class="list-unstyled mb-3">
+        <li>✔ Unlimited PDFs</li>
+        <li>✔ Sharing</li>
+        <li>✔ Priority processing</li>
+      </ul>
+
+      {% if request.user.is_authenticated %}
+      <form method="post" action="{% url 'activate_pro' %}">
+        {% csrf_token %}
+
+        <input type="text" class="form-control mb-2" placeholder="Card Number" required>
+        <input type="text" class="form-control mb-2" placeholder="MM / YY" required>
+        <input type="text" class="form-control mb-2" placeholder="CVC" required>
+
+        <button class="btn btn-p w-100 mt-2">
+          Pay & Activate Pro
+        </button>
+
+        <small class="text-muted d-block mt-2">
+          Demo mode – no real charge
+        </small>
+      </form>
+      {% else %}
+        <a href="{% url 'login' %}" class="btn btn-p w-100 mt-3">
+          Login to Upgrade
+        </a>
+      {% endif %}`
+    </div>
+  </div>
+</div>
+{% endblock %}

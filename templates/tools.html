@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="mb-4 text-center">
+    <h3 class="fw-bold">PDF Tools</h3>
+    <p class="text-primary fw-bold">
+        Fast, secure, and easy PDF processing
+    </p>
+</div>
+
+<!-- ================= SHARE RESULT ================= -->
+{% if share_url %}
+<div class="alert alert-success text-center rounded-4 shadow-sm mb-5">
+
+    <h5 class="fw-bold mb-3">✅ Your PDF is Ready</h5>
+
+    <input type="text"
+           id="shareLink"
+           class="form-control text-center mb-3"
+           value="{{ share_url }}"
+           readonly>
+
+    <div class="d-grid gap-2">
+
+        <button class="btn btn-success" onclick="copyLink()">
+            📋 Copy Link
+        </button>
+
+        <a href="{{ share_url }}" target="_blank" class="btn btn-outline-primary">
+            👁️ View PDF
+        </a>
+
+        <a href="{{ share_url }}?download=1" class="btn btn-outline-dark">
+            ⬇️ Download PDF
+        </a>
+
+        <a href="https://wa.me/?text={{ share_url|urlencode }}"
+           target="_blank"
+           class="btn btn-primary">
+            📤 Share on WhatsApp
+        </a>
+
+    </div>
+</div>
+{% endif %}
+<!-- ================================================= -->
+
+
+<div class="row g-4">
+
+    <!-- ================= MERGE ================= -->
+    <div class="col-md-4">
+        <div class="card shadow-sm rounded-4 h-100">
+            <div class="card-body bg-black text-white rounded-4 text-center">
+                <h5 class="fw-bold">Merge PDF</h5>
+                <p class="text-primary">
+                    Combine multiple PDFs into one file
+                </p>
+                <a href="/merge/" class="btn btn-p w-100">
+                    Merge PDFs
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SPLIT ================= -->
+    <div class="col-md-4">
+        <div class="card shadow-sm rounded-4 h-100">
+            <div class="card-body bg-black text-white rounded-4 text-center">
+                <h5 class="fw-bold">Split PDF</h5>
+                <p class="text-primary">
+                    Extract pages from a PDF
+                </p>
+                <a href="/split/" class="btn btn-p w-100">
+                    Split PDF
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= COMPRESS ================= -->
+    <div class="col-md-4">
+        <div class="card shadow-sm rounded-4 h-100">
+            <div class="card-body bg-black text-white rounded-4 text-center">
+                <h5 class="fw-bold">Compress PDF</h5>
+                <p class="text-primary">
+                    Reduce PDF file size
+                </p>
+                <a href="/compress/" class="btn btn-p w-100">
+                    Compress PDF
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+function copyLink() {
+    const input = document.getElementById("shareLink");
+    navigator.clipboard.writeText(input.value)
+        .then(() => alert("Link copied to clipboard!"));
+}
+</script>
+
+{% endblock %}
