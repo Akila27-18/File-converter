@@ -1,40 +1,63 @@
-
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block content %}
-<div class="col-md-4">
-  <div class="card shadow border-primary rounded-4 h-100">
-    <div class="card-body text-center">
-      <h5 class="fw-bold">Pro</h5>
-      <h2 class="my-3">$9 / mo</h2>
 
-      <ul class="list-unstyled mb-3">
-        <li>✔ Unlimited PDFs</li>
-        <li>✔ Sharing</li>
-        <li>✔ Priority processing</li>
-      </ul>
+<div class="text-center mb-5">
+  <h3 class="fw-bold">Pricing</h3>
+  <p class="text-muted">Choose the plan that fits your needs</p>
+</div>
 
-      {% if request.user.is_authenticated %}
-      <form method="post" action="{% url 'activate_pro' %}">
-        {% csrf_token %}
+<div class="row justify-content-center g-4">
 
-        <input type="text" class="form-control mb-2" placeholder="Card Number" required>
-        <input type="text" class="form-control mb-2" placeholder="MM / YY" required>
-        <input type="text" class="form-control mb-2" placeholder="CVC" required>
-
-        <button class="btn btn-p w-100 mt-2">
-          Pay & Activate Pro
+  <!-- FREE -->
+  <div class="col-md-3">
+    <div class="card shadow-sm rounded-4 text-center">
+      <div class="card-body">
+        <h5>Free</h5>
+        <h2>$0</h2>
+        <ul class="list-unstyled">
+          <li>5 PDFs/day</li>
+          <li>No sharing</li>
+        </ul>
+        <button class="btn btn-outline-secondary w-100" disabled>
+          Current Plan
         </button>
-
-        <small class="text-muted d-block mt-2">
-          Demo mode – no real charge
-        </small>
-      </form>
-      {% else %}
-        <a href="{% url 'login' %}" class="btn btn-p w-100 mt-3">
-          Login to Upgrade
-        </a>
-      {% endif %}`
+      </div>
     </div>
   </div>
+
+  <!-- PRO -->
+  <div class="col-md-3">
+    <div class="card shadow border-primary rounded-4 text-center">
+      <div class="card-body">
+        <h5>Pro</h5>
+        <h2>$9 / mo</h2>
+        <ul class="list-unstyled">
+          <li>Unlimited PDFs</li>
+          <li>7-day sharing</li>
+        </ul>
+        <a href="/pricing/checkout/pro/" class="btn btn-p w-100">
+          Upgrade
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUSINESS -->
+  <div class="col-md-3">
+    <div class="card shadow border-dark rounded-4 text-center">
+      <div class="card-body">
+        <h5>Business</h5>
+        <h2>$29 / mo</h2>
+        <ul class="list-unstyled">
+          <li>Unlimited PDFs</li>
+          <li>Unlimited sharing</li>
+        </ul>
+        <a href="/pricing/checkout/business/" class="btn btn-dark w-100">
+          Upgrade
+        </a>
+      </div>
+    </div>
+  </div>
+
 </div>
 {% endblock %}

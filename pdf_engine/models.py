@@ -13,21 +13,18 @@ def default_expire():
 
 # pdf_engine/models.py
 
-from django.urls import reverse
+from django.db import models
+from django.contrib.auth.models import User
 from django.utils import timezone
+from datetime import timedelta
+import uuid
 
 class SharedFile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    file = models.FileField(upload_to=upload_to_shared)
+    file = models.FileField(upload_to="shared/")
     token = models.UUIDField(default=uuid.uuid4, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    expire_at = models.DateTimeField(default=timezone.now() + timedelta(days=1))
+    expire_at = models.DateTimeField()
 
     def is_expired(self):
         return timezone.now() > self.expire_at
-
-    def get_absolute_url(self):
-        return reverse("share_file", args=[str(self.token)])
-
-    def __str__(self):
-        return f"{self.user.username} - {self.file.name}"

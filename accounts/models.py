@@ -1,28 +1,35 @@
 from django.db import models
 from django.contrib.auth.models import User
-from datetime import date
+from django.utils import timezone
+from datetime import timedelta
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    plan = models.CharField(max_length=20, default='FREE')
-    daily_usage = models.IntegerField(default=0)
-    last_reset = models.DateField(default=date.today)
+    PLAN_CHOICES = (
+        ("free", "Free"),
+        ("pro", "Pro"),
+        ("business", "Business"),
+    )
 
-    def reset_if_needed(self):
-        if self.last_reset != date.today():
-            self.daily_usage = 0
-            self.last_reset = date.today()
-            self.save()
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    plan = models.CharField(max_length=20, choices=PLAN_CHOICES, default="free")
+    daily_usage = models.IntegerField(default=0)
+    last_reset = models.DateField(auto_now=True)
 
     def can_use(self):
-        self.reset_if_needed()
-        if self.plan == 'FREE' and self.daily_usage >= 5:
-            return False
+        if self.plan == "free":
+            return self.daily_usage < 5
         return True
+
+    def share_days(self):
+        if self.plan == "free":
+            return 1
+        if self.plan == "pro":
+            return 7
+        return 3650  # business = no expiry
 
     def increment(self):
         self.daily_usage += 1
         self.save()
 
     def __str__(self):
-        return self.user.username
+        return f"{self.user.username} ({self.plan})"

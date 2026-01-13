@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-5" style="max-width: 600px">
+
+    <div class="card shadow rounded-4">
+        <div class="card-body text-center">
+
+            <h4 class="fw-bold mb-3">📄 Shared PDF</h4>
+
+            <p class="text-muted mb-2">
+                {{ file.file.name|cut:"shared/" }}
+            </p>
+
+            <p class="text-muted">
+                Expires on {{ file.expire_at|date:"M d, Y H:i" }}
+            </p>
+
+            <div class="d-grid gap-2 mt-4">
+
+                <a href="{{ view_url }}" target="_blank"
+                   class="btn btn-outline-primary">
+                    👁️ View PDF
+                </a>
+
+                <a href="{{ download_url }}"
+                   class="btn btn-outline-dark">
+                    ⬇️ Download PDF
+                </a>
+
+                <a href="https://wa.me/?text={{ view_url|urlencode }}"
+                   target="_blank"
+                   class="btn btn-success">
+                    📤 Share on WhatsApp
+                </a>
+<form method="post" class="mt-4">
+    {% csrf_token %}
+    <input type="email"
+           name="email"
+           class="form-control mb-2"
+           placeholder="Enter email to send PDF"
+           required>
+
+    <button class="btn btn-primary w-100">
+        📧 Send Link via Email
+    </button>
+</form>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

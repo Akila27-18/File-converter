@@ -57,7 +57,7 @@
                 <p class="text-primary">
                     Combine multiple PDFs into one file
                 </p>
-                <a href="/merge/" class="btn btn-p w-100">
+                <a href="{% url 'merge' %}" class="btn btn-p w-100">
                     Merge PDFs
                 </a>
             </div>
@@ -72,7 +72,7 @@
                 <p class="text-primary">
                     Extract pages from a PDF
                 </p>
-                <a href="/split/" class="btn btn-p w-100">
+                <a href="{% url 'split' %}" class="btn btn-p w-100">
                     Split PDF
                 </a>
             </div>
@@ -87,9 +87,31 @@
                 <p class="text-primary">
                     Reduce PDF file size
                 </p>
-                <a href="/compress/" class="btn btn-p w-100">
+                <a href="{% url 'compress' %}" class="btn btn-p w-100">
                     Compress PDF
                 </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= PDF → WORD ================= -->
+    <div class="col-md-4">
+        <div class="card shadow-sm rounded-4 h-100">
+            <div class="card-body bg-black text-white text-center">
+                <h5>PDF → Word</h5>
+                <p class="text-primary">Convert PDF to editable DOCX</p>
+                <a href="{% url 'pdf_to_word' %}" class="btn btn-p w-100">Convert</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= PDF → IMAGE ================= -->
+    <div class="col-md-4">
+        <div class="card shadow-sm rounded-4 h-100">
+            <div class="card-body bg-black text-white text-center">
+                <h5>PDF → Image</h5>
+                <p class="text-primary">Convert pages to PNG</p>
+                <a href="{% url 'pdf_to_image' %}" class="btn btn-p w-100">Convert</a>
             </div>
         </div>
     </div>

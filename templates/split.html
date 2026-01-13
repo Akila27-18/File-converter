@@ -1,59 +1,120 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block content %}
 
 <div class="row justify-content-center">
   <div class="col-md-6">
+    <div class="card shadow-sm border-0 rounded-4 p-4">
 
-    <div class="card shadow-sm border-0 rounded-4">
-      <div class="card-body p-4">
+      <h4 class="fw-bold mb-3 text-center">Split PDF</h4>
+      <p class="text-muted text-center mb-4">
+        Extract specific pages or split the entire PDF
+      </p>
 
-        <h4 class="fw-bold text-center mb-2">Split PDF</h4>
-        <p class="text-muted text-center mb-4">
-          Split all pages or select a custom page range
-        </p>
+      <!-- Upload form -->
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-        <form method="post" enctype="multipart/form-data">
-          {% csrf_token %}
+        <!-- FILE INPUT -->
+        <div class="mb-3">
+          <label class="form-label">Select PDF file</label>
 
-          <div class="mb-3">
-            <label class="form-label">PDF File</label>
-            <input type="file" name="file" class="form-control" required>
+          <div id="dropZone"
+               class="border border-2 border-dashed rounded-4 p-4 text-center text-muted"
+               style="cursor:pointer">
+
+            <p class="mb-2 fw-bold">Drag & drop PDF here</p>
+            <p class="small">or click to browse</p>
+
+            <input type="file"
+                   id="fileInput"
+                   name="file"
+                   accept=".pdf"
+                   hidden
+                   required>
           </div>
 
-          <div class="mb-3">
-            <label class="form-label">Split Mode</label>
-            <select class="form-select" name="mode" id="mode">
-              <option value="all">Split all pages</option>
-              <option value="range">Split by page range</option>
-            </select>
-          </div>
+          <small class="text-muted">Only one PDF file allowed</small>
+        </div>
 
-          <div class="mb-3" id="pages-box" style="display:none;">
-            <label class="form-label">Pages (e.g. 1-3,5,7-9)</label>
-            <input type="text" name="pages" class="form-control">
-          </div>
+        <!-- SPLIT MODE -->
+        <div class="mb-3">
+          <label class="form-label">Split Mode</label>
+          <select name="mode" class="form-select">
+            <option value="all">All pages</option>
+            <option value="custom">Specific pages</option>
+          </select>
+        </div>
 
-          <button class="btn btn-p w-100 py-2">
-            Split PDF
-          </button>
-        </form>
-<a
- href="https://wa.me/?text={{ request.build_absolute_uri }}"
- target="_blank"
- class="btn btn-success w-100 mt-3">
- Share via WhatsApp
-</a>
+        <!-- PAGES -->
+        <div class="mb-3">
+          <label class="form-label">Pages (optional)</label>
+          <input type="text"
+                 name="pages"
+                 class="form-control"
+                 placeholder="Example: 1-3,5,7">
+          <small class="text-muted">
+            Used only when "Specific pages" is selected
+          </small>
+        </div>
 
+        <button class="btn btn-p w-100 py-2">
+          Split PDF
+        </button>
+      </form>
+
+      <!-- SHARE RESULT -->
+      {% if share_url %}
+      <div class="mt-4 text-center">
+        <h5 class="fw-bold">Your PDF is ready!</h5>
+
+        <input type="text"
+               class="form-control mb-2"
+               value="{{ share_url }}"
+               id="shareLink"
+               readonly>
+
+        <button class="btn btn-success w-100 mb-2" onclick="copyLink()">
+          Copy Link
+        </button>
+
+        <a href="https://wa.me/?text={{ share_url|urlencode }}"
+           target="_blank"
+           class="btn btn-primary w-100">
+          Share via WhatsApp
+        </a>
       </div>
-    </div>
+      {% endif %}
 
+    </div>
   </div>
 </div>
 
 <script>
-document.getElementById("mode").addEventListener("change", function () {
-  document.getElementById("pages-box").style.display =
-    this.value === "range" ? "block" : "none";
+function copyLink() {
+  navigator.clipboard.writeText(
+    document.getElementById("shareLink").value
+  );
+  alert("Link copied to clipboard!");
+}
+
+const dropZone = document.getElementById("dropZone");
+const fileInput = document.getElementById("fileInput");
+
+dropZone.addEventListener("click", () => fileInput.click());
+
+dropZone.addEventListener("dragover", e => {
+  e.preventDefault();
+  dropZone.classList.add("bg-light");
+});
+
+dropZone.addEventListener("dragleave", () => {
+  dropZone.classList.remove("bg-light");
+});
+
+dropZone.addEventListener("drop", e => {
+  e.preventDefault();
+  dropZone.classList.remove("bg-light");
+  fileInput.files = e.dataTransfer.files;
 });
 </script>
 

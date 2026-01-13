@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h3 class="fw-bold">Dashboard</h3>
-            <p class="text-muted">Manage and use your PDF tools</p>
+            <p class="text-white">Manage and use your PDF tools</p>
         </div>
         <a href="{% url 'my_documents' %}" class="btn btn-outline-primary">
             My Documents
@@ -62,13 +62,31 @@
                 </div>
             </div>
         </div>
-
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="fw-bold">PDF to Word</h5>
+                    <p class="text-muted mb-3">Convert PDF files to editable Word documents</p>
+                    <a href="/pdf-to-word/" class="btn btn-p mt-auto w-100">Open Tool</a>
+                </div>
+            </div>
+        </div>
+    <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="fw-bold">Word to PDF</h5>
+                    <p class="text-muted mb-3">Convert Word documents to PDF files</p>
+                    <a href="/word-to-pdf/" class="btn btn-p mt-auto w-100">Open Tool</a>
+                </div>      
+            </div>
+        </div>
     </div>
+</div>
 
-    <!-- Recently Shared / My Documents Preview -->
+        <!-- Recent>ly Shared / My Documents Preview -->
     <div class="mb-3">
         <h5 class="fw-bold">Recently Shared PDFs</h5>
-        <p class="text-muted">Quick access to your recent PDFs for viewing or download</p>
+        <p class="text-white">Quick access to your recent PDFs for viewing or download</p>
     </div>
 
     <ul class="list-group mb-5">
