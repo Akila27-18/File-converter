@@ -3,23 +3,24 @@
 
 <div class="container" style="max-width: 650px;">
     <div class="text-center mb-4">
-        <h3 class="fw-bold">📄 PDF → Image</h3>
-        <p class="text-muted">Convert PDF pages to images (PNG/JPG)</p>
+        <h3 class="fw-bold">📊 Excel → PDF</h3>
+        <p class="text-muted">Convert Excel files (.xlsx/.xls) to PDF</p>
     </div>
 
     <div class="card shadow-sm border-0 rounded-4">
         <div class="card-body p-4">
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
+
                 <div id="dropZone" class="border border-2 border-dashed rounded-4 p-4 text-center mb-3" style="cursor:pointer;">
-                    <p class="fw-bold mb-1">Drag & drop PDF here</p>
+                    <p class="fw-bold mb-1">Drag & drop Excel here</p>
                     <p class="text-muted small">or click to select file</p>
-                    <input type="file" name="files" id="fileInput" accept=".pdf" required hidden>
+                    <input type="file" name="files" id="fileInput" accept=".xlsx,.xls" required hidden>
                 </div>
 
                 <div id="fileName" class="small text-muted mb-3"></div>
 
-                <button class="btn btn-primary w-100 py-2">🖼 Convert to Image</button>
+                <button class="btn btn-primary w-100 py-2">📄 Convert to PDF</button>
             </form>
 
             {% if share_url %}
@@ -28,8 +29,8 @@
                 <h5 class="fw-bold mb-2">✅ Conversion Completed</h5>
                 <input type="text" class="form-control mb-3 text-center" value="{{ share_url }}" readonly>
                 <div class="d-grid gap-2">
-                    <a href="{{ share_url }}" target="_blank" class="btn btn-outline-primary">👁 View Image</a>
-                    <a href="{{ share_url }}?download=1" class="btn btn-outline-dark">⬇ Download Image</a>
+                    <a href="{{ share_url }}" target="_blank" class="btn btn-outline-primary">👁 View PDF</a>
+                    <a href="{{ share_url }}?download=1" class="btn btn-outline-dark">⬇ Download PDF</a>
                 </div>
             </div>
             {% endif %}
@@ -41,12 +42,16 @@
 const dropZone = document.getElementById("dropZone");
 const fileInput = document.getElementById("fileInput");
 const fileName = document.getElementById("fileName");
+
 dropZone.addEventListener("click", () => fileInput.click());
 dropZone.addEventListener("dragover", (e) => { e.preventDefault(); dropZone.classList.add("bg-light"); });
 dropZone.addEventListener("dragleave", () => dropZone.classList.remove("bg-light"));
 dropZone.addEventListener("drop", (e) => { e.preventDefault(); dropZone.classList.remove("bg-light"); fileInput.files = e.dataTransfer.files; showFile(); });
 fileInput.addEventListener("change", showFile);
-function showFile() { if (fileInput.files.length > 0) fileName.innerHTML = "Selected file: " + fileInput.files[0].name; }
+
+function showFile() {
+    if (fileInput.files.length > 0) fileName.innerHTML = "Selected file: " + fileInput.files[0].name;
+}
 </script>
 
 {% endblock %}

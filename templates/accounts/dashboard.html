@@ -1,113 +1,75 @@
 {% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="container py-4">
 
-    <!-- Dashboard Header -->
+<div class="container mt-4">
+
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h3 class="fw-bold">Dashboard</h3>
-            <p class="text-white">Manage and use your PDF tools</p>
-        </div>
-        <a href="{% url 'my_documents' %}" class="btn btn-outline-primary">
-            My Documents
+        <h3 class="fw-bold">📊 Dashboard – My Documents</h3>
+        <a href="{% url 'tools' %}" class="btn btn-outline-primary">
+            Go to Tools
         </a>
     </div>
 
-    <!-- User Plan Card -->
-    <div class="card border-0 shadow-sm rounded-4 mb-4">
-        <div class="card-body">
-            <h5 class="fw-bold mb-1">Your Plan</h5>
-            <p class="mb-1">
-                <strong>{{ request.user.userprofile.plan }}</strong> plan
-            </p>
-            <p class="text-muted mb-0">
-                Usage today: {{ request.user.userprofile.daily_usage }} / 5
-                {% if request.user.userprofile.daily_usage >= 5 %}
-                    <span class="badge bg-danger ms-2">Limit reached</span>
-                {% endif %}
-            </p>
+    {% if files %}
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-0">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>File</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for file in files %}
+                    <tr>
+                        <td class="fw-semibold">
+                            {{ file.file.name|slice:"15:" }}
+                        </td>
+
+                        <td>
+                            {% if file.expire_at < now %}
+                                <span class="badge bg-danger">Expired</span>
+                            {% else %}
+                                <span class="badge bg-success">Active</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {{ file.created_at|date:"M d, Y H:i" }}
+                        </td>
+
+                        <td class="text-end">
+                            <a href="{% url 'share_file' file.token %}"
+                               class="btn btn-sm btn-outline-success">
+                                Share
+                            </a>
+
+                            <a href="{% url 'share_file' file.token %}?download=1"
+                               class="btn btn-sm btn-outline-primary">
+                                Download
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
-
-    <!-- PDF Tools -->
-    <div class="row g-4 mb-5">
-
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0 rounded-4 h-100">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="fw-bold">Merge PDF</h5>
-                    <p class="text-muted mb-3">Combine multiple PDFs into one file</p>
-                    <a href="/merge/" class="btn btn-p mt-auto w-100">Open Tool</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0 rounded-4 h-100">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="fw-bold">Split PDF</h5>
-                    <p class="text-muted mb-3">Extract pages from a PDF</p>
-                    <a href="/split/" class="btn btn-p mt-auto w-100">Open Tool</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0 rounded-4 h-100">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="fw-bold">Compress PDF</h5>
-                    <p class="text-muted mb-3">Reduce PDF file size</p>
-                    <a href="/compress/" class="btn btn-p mt-auto w-100">Open Tool</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0 rounded-4 h-100">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="fw-bold">PDF to Word</h5>
-                    <p class="text-muted mb-3">Convert PDF files to editable Word documents</p>
-                    <a href="/pdf-to-word/" class="btn btn-p mt-auto w-100">Open Tool</a>
-                </div>
-            </div>
-        </div>
-    <div class="col-md-4">
-            <div class="card shadow-sm border-0 rounded-4 h-100">
-                <div class="card-body d-flex flex-column">
-                    <h5 class="fw-bold">Word to PDF</h5>
-                    <p class="text-muted mb-3">Convert Word documents to PDF files</p>
-                    <a href="/word-to-pdf/" class="btn btn-p mt-auto w-100">Open Tool</a>
-                </div>      
-            </div>
-        </div>
+    {% else %}
+    <div class="alert alert-info text-center p-5 rounded-4">
+        <h5>No documents yet</h5>
+        <p class="mb-3">Your converted files will appear here.</p>
+        <a href="{% url 'tools' %}" class="btn btn-primary">
+            Start Using Tools
+        </a>
     </div>
+    {% endif %}
+
 </div>
 
-        <!-- Recent>ly Shared / My Documents Preview -->
-    <div class="mb-3">
-        <h5 class="fw-bold">Recently Shared PDFs</h5>
-        <p class="text-white">Quick access to your recent PDFs for viewing or download</p>
-    </div>
-
-    <ul class="list-group mb-5">
-        {% for file in request.user.sharedfile_set.all|slice:":5" %}
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            {{ file.file.name|slice:"7:" }}
-            <div>
-                <a href="{{ file.get_absolute_url }}" class="btn btn-sm btn-outline-primary me-2">View</a>
-                <a href="{{ file.get_absolute_url }}" download class="btn btn-sm btn-primary">Download</a>
-            </div>
-        </li>
-        {% empty %}
-        <li class="list-group-item text-muted">No recent files.</li>
-        {% endfor %}
-    </ul>
-
-    <!-- Upgrade / Pricing Section -->
-    <div class="text-center py-4">
-        <p class="mb-2">Want more daily usage or advanced features?</p>
-        <a href="/pricing/" class="btn btn-outline-success btn-lg">Upgrade Plan</a>
-    </div>
-
-</div>
 {% endblock %}

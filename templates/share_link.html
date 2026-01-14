@@ -4,38 +4,44 @@
 <div class="container mt-5" style="max-width:600px">
 
     <div class="alert alert-success text-center rounded-4 shadow-sm">
-        <h5 class="fw-bold">✅ PDF Ready</h5>
+        <h5 class="fw-bold">✅ File Ready</h5>
 
         <input type="text"
                class="form-control text-center my-3"
-               value="{{ share_url }}"
+               value="{{ request.build_absolute_uri }}"
                readonly>
 
         <div class="d-grid gap-2 mb-4">
-            <a href="{{ share_url }}" target="_blank"
-               class="btn btn-outline-primary">👁️ View PDF</a>
+            <a href="{{ request.build_absolute_uri }}" target="_blank" class="btn btn-outline-primary">
+                👁️ View
+            </a>
 
-            <a href="{{ share_url }}?download=1"
+            <a href="{{ request.build_absolute_uri }}?download=1"
                class="btn btn-outline-dark">⬇️ Download</a>
         </div>
 
         <!-- ================= EMAIL SHARE ================= -->
         <form method="post">
-            {% csrf_token %}
-            <input type="email"
-                   name="email"
-                   class="form-control mb-2"
-                   placeholder="Enter email address"
-                   required>
+    {% csrf_token %}
+    <input type="email" name="email" class="form-control mb-2" placeholder="Enter email address" required>
+    <button class="btn btn-primary w-100">📧 Send via Email</button>
+</form>
 
-            <button class="btn btn-primary w-100">
-                📧 Send via Email
-            </button>
-        </form>
         <!-- ================================================= -->
 
-    </div>
+        <button class="btn btn-success w-100 mt-2" onclick="copyLink()">📋 Copy Link</button>
 
+    </div>
 </div>
+
+<script>
+function copyLink() {
+  const copyText = document.querySelector('input[readonly]');
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);
+  navigator.clipboard.writeText(copyText.value);
+  alert("Link copied to clipboard!");
+}
+</script>
 
 {% endblock %}

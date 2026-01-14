@@ -1,113 +1,106 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block content %}
 
-<div class="row justify-content-center">
-  <div class="col-md-6">
-    <div class="card shadow-sm border-0 rounded-4 p-4">
+<div class="container" style="max-width: 650px;">
 
-      <h4 class="fw-bold mb-3 text-center">Merge PDF</h4>
-      <p class="text-muted text-center mb-4">
-        Combine multiple PDF files into one document
-      </p>
-
-      <!-- Upload form -->
-      <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-
-        <div class="mb-3">
-          <label class="form-label">Select PDF files</label>
-
-          <div id="dropZone"
-               class="border border-2 border-dashed rounded-4 p-4 text-center text-muted"
-               style="cursor:pointer">
-
-            <p class="mb-2 fw-bold">Drag & drop PDFs here</p>
-            <p class="small">or click to browse</p>
-            <p id="fileCount" class="small text-success d-none"></p>
-
-            <input type="file"
-                   id="fileInput"
-                   name="files"
-                   accept=".pdf"
-                   multiple
-                   hidden
-                   required>
-          </div>
-
-          <small class="text-muted">
-            Hold Ctrl / Cmd to select multiple files
-          </small>
-        </div>
-
-        <button class="btn btn-p w-100 py-2">
-          Merge PDFs
-        </button>
-      </form>
-
-      <!-- Shareable link -->
-      {% if share_url %}
-      <div class="mt-4 text-center">
-        <h5 class="fw-bold">Your PDF is ready!</h5>
-
-        <input type="text"
-               class="form-control mb-2"
-               value="{{ share_url }}"
-               id="shareLink"
-               readonly>
-
-        <button class="btn btn-success w-100 mb-2" onclick="copyLink()">
-          Copy Link
-        </button>
-
-        <a href="https://wa.me/?text={{ share_url|urlencode }}"
-           target="_blank"
-           class="btn btn-primary w-100">
-          Share via WhatsApp
-        </a>
-      </div>
-      {% endif %}
-
+    <div class="text-center mb-4">
+        <h3 class="fw-bold">➕ Merge PDFs</h3>
+        <p class="text-muted">
+            Combine multiple PDF files into one document
+        </p>
     </div>
-  </div>
+
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-4">
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- DRAG & DROP -->
+                <div id="dropZone"
+                     class="border border-2 border-dashed rounded-4 p-4 text-center mb-3"
+                     style="cursor:pointer;">
+                    <p class="fw-bold mb-1">Drag & drop PDFs here</p>
+                    <p class="text-muted small">or click to select files</p>
+
+                    <input type="file"
+                           name="files"
+                           id="fileInput"
+                           accept=".pdf"
+                           multiple
+                           required
+                           hidden>
+                </div>
+
+                <div id="fileList" class="small text-muted mb-3"></div>
+
+                <button class="btn btn-primary w-100 py-2">
+                    ➕ Merge PDFs
+                </button>
+            </form>
+
+            {% if share_url %}
+            <hr class="my-4">
+
+            <div class="text-center">
+                <h5 class="fw-bold mb-2">✅ Merge Completed</h5>
+
+                <input type="text"
+                       class="form-control mb-3 text-center"
+                       value="{{ share_url }}"
+                       readonly>
+
+                <div class="d-grid gap-2">
+                    <a href="{{ share_url }}"
+                       target="_blank"
+                       class="btn btn-outline-primary">
+                        👁 View PDF
+                    </a>
+
+                    <a href="{{ share_url }}?download=1"
+                       class="btn btn-outline-dark">
+                        ⬇ Download PDF
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
 </div>
 
 <script>
-function copyLink() {
-  navigator.clipboard.writeText(
-    document.getElementById("shareLink").value
-  );
-  alert("Link copied to clipboard!");
-}
-
 const dropZone = document.getElementById("dropZone");
 const fileInput = document.getElementById("fileInput");
-const fileCount = document.getElementById("fileCount");
+const fileList = document.getElementById("fileList");
 
 dropZone.addEventListener("click", () => fileInput.click());
 
-fileInput.addEventListener("change", () => {
-  if (fileInput.files.length > 0) {
-    fileCount.textContent = `${fileInput.files.length} file(s) selected`;
-    fileCount.classList.remove("d-none");
-  }
-});
-
-dropZone.addEventListener("dragover", e => {
-  e.preventDefault();
-  dropZone.classList.add("bg-light");
+dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZone.classList.add("bg-light");
 });
 
 dropZone.addEventListener("dragleave", () => {
-  dropZone.classList.remove("bg-light");
+    dropZone.classList.remove("bg-light");
 });
 
-dropZone.addEventListener("drop", e => {
-  e.preventDefault();
-  dropZone.classList.remove("bg-light");
-  fileInput.files = e.dataTransfer.files;
-  fileCount.textContent = `${fileInput.files.length} file(s) selected`;
-  fileCount.classList.remove("d-none");
+dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropZone.classList.remove("bg-light");
+    fileInput.files = e.dataTransfer.files;
+    showFiles();
 });
+
+fileInput.addEventListener("change", showFiles);
+
+function showFiles() {
+    fileList.innerHTML = "";
+    Array.from(fileInput.files).forEach((file, i) => {
+        fileList.innerHTML += `${i + 1}. ${file.name}<br>`;
+    });
+}
 </script>
 
 {% endblock %}
