@@ -1,18 +1,29 @@
 {% extends "base.html" %}
+{% block title %}Link Expired{% endblock %}
+
 {% block content %}
+<div class="container d-flex align-items-center justify-content-center"
+     style="min-height:70vh">
 
-<div class="container text-center mt-5">
+    <div class="text-center">
 
-    <h3 class="fw-bold text-danger">⏰ Link Expired</h3>
+        <div class="mb-4">
+            <span style="font-size:4rem;">⏰</span>
+        </div>
 
-    <p class="text-muted">
-        This shared document is no longer available.
-    </p>
+        <h3 class="fw-bold text-danger mb-3">
+            Link Expired
+        </h3>
 
-    <a href="/" class="btn btn-primary mt-3">
-        Go to PDF Tools
-    </a>
+        <p class="text-muted mb-4">
+            This shared document is no longer available.<br>
+            The link may have expired or been deleted.
+        </p>
 
+        <a href="{% url 'tools' %}" class="btn btn-primary px-4">
+            🔧 Go to PDF Tools
+        </a>
+
+    </div>
 </div>
-
 {% endblock %}

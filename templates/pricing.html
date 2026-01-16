@@ -1,63 +1,86 @@
 {% extends "base.html" %}
+{% block title %}Pricing{% endblock %}
+
 {% block content %}
+<div class="container mt-5">
 
-<div class="text-center mb-5">
-  <h3 class="fw-bold">Pricing</h3>
-  <p class="text-muted">Choose the plan that fits your needs</p>
-</div>
-
-<div class="row justify-content-center g-4">
-
-  <!-- FREE -->
-  <div class="col-md-3">
-    <div class="card shadow-sm rounded-4 text-center">
-      <div class="card-body">
-        <h5>Free</h5>
-        <h2>$0</h2>
-        <ul class="list-unstyled">
-          <li>5 PDFs/day</li>
-          <li>No sharing</li>
-        </ul>
-        <button class="btn btn-outline-secondary w-100" disabled>
-          Current Plan
-        </button>
-      </div>
+    <div class="text-center mb-5">
+        <h3 class="fw-bold">💳 Pricing Plans</h3>
+        <p class="text-muted">
+            Choose the plan that fits your document workflow
+        </p>
     </div>
-  </div>
 
-  <!-- PRO -->
-  <div class="col-md-3">
-    <div class="card shadow border-primary rounded-4 text-center">
-      <div class="card-body">
-        <h5>Pro</h5>
-        <h2>$9 / mo</h2>
-        <ul class="list-unstyled">
-          <li>Unlimited PDFs</li>
-          <li>7-day sharing</li>
-        </ul>
-        <a href="/pricing/checkout/pro/" class="btn btn-p w-100">
-          Upgrade
-        </a>
-      </div>
-    </div>
-  </div>
+    <div class="row justify-content-center g-4">
 
-  <!-- BUSINESS -->
-  <div class="col-md-3">
-    <div class="card shadow border-dark rounded-4 text-center">
-      <div class="card-body">
-        <h5>Business</h5>
-        <h2>$29 / mo</h2>
-        <ul class="list-unstyled">
-          <li>Unlimited PDFs</li>
-          <li>Unlimited sharing</li>
-        </ul>
-        <a href="/pricing/checkout/business/" class="btn btn-dark w-100">
-          Upgrade
-        </a>
-      </div>
+        <!-- FREE PLAN -->
+        <div class="col-md-4 col-lg-3">
+            <div class="card shadow-sm rounded-4 text-center h-100">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold">Free</h5>
+                    <h2 class="my-3">$0</h2>
+
+                    <ul class="list-unstyled mb-4">
+                        <li>✔ 5 PDFs / day</li>
+                        <li>✔ Basic tools</li>
+                        <li>❌ No sharing</li>
+                        <li>❌ No OCR</li>
+                    </ul>
+
+                    <button class="btn btn-outline-secondary w-100" disabled>
+                        Current Plan
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRO PLAN -->
+        <div class="col-md-4 col-lg-3">
+            <div class="card shadow border-primary rounded-4 text-center h-100">
+                <div class="card-body p-4">
+                    <span class="badge bg-primary mb-2">Most Popular</span>
+
+                    <h5 class="fw-bold">Pro</h5>
+                    <h2 class="my-3">$9 <small class="fs-6 text-muted">/ month</small></h2>
+
+                    <ul class="list-unstyled mb-4">
+                        <li>✔ Unlimited PDFs</li>
+                        <li>✔ All tools unlocked</li>
+                        <li>✔ 7-day sharing links</li>
+                        <li>✔ OCR support</li>
+                    </ul>
+
+                    <a href="{% url 'pricing' %}?plan=pro"
+                       class="btn btn-primary w-100">
+                        Upgrade to Pro
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- BUSINESS PLAN -->
+        <div class="col-md-4 col-lg-3">
+            <div class="card shadow border-dark rounded-4 text-center h-100">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold">Business</h5>
+                    <h2 class="my-3">$29 <small class="fs-6 text-muted">/ month</small></h2>
+
+                    <ul class="list-unstyled mb-4">
+                        <li>✔ Unlimited PDFs</li>
+                        <li>✔ Unlimited sharing</li>
+                        <li>✔ Priority processing</li>
+                        <li>✔ Team usage</li>
+                    </ul>
+
+                    <a href="{% url 'pricing' %}?plan=business"
+                       class="btn btn-dark w-100">
+                        Upgrade to Business
+                    </a>
+                </div>
+            </div>
+        </div>
+
     </div>
-  </div>
 
 </div>
 {% endblock %}

@@ -1,39 +1,85 @@
 {% extends "base.html" %}
+{% block title %}PDF to Excel{% endblock %}
+
 {% block content %}
+<div class="container mt-5" style="max-width:700px">
+    <div class="card shadow-sm rounded-4 p-4">
 
-<div class="container" style="max-width: 650px;">
-    <div class="text-center mb-4">
-        <h3 class="fw-bold">📄 PDF → Excel</h3>
-        <p class="text-muted">Convert PDF files to Excel (.xlsx)</p>
-    </div>
+        <h4 class="fw-bold mb-3 text-center">📊 PDF to Excel</h4>
+        <p class="text-muted text-center mb-4">
+            Convert any PDF into Excel — tables, text, or scanned documents
+        </p>
 
-    <div class="card shadow-sm border-0 rounded-4">
-        <div class="card-body p-4">
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div id="dropZone" class="border border-2 border-dashed rounded-4 p-4 text-center mb-3" style="cursor:pointer;">
-                    <p class="fw-bold mb-1">Drag & drop PDF here</p>
-                    <p class="text-muted small">or click to select file</p>
-                    <input type="file" name="files" id="fileInput" accept=".pdf" required hidden>
-                </div>
+        <!-- Upload Form -->
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
 
-                <div id="fileName" class="small text-muted mb-3"></div>
+            <!-- Drag & Drop -->
+            <div id="dropZone"
+                 class="border border-2 border-dashed rounded-4 p-4 text-center mb-3"
+                 style="cursor:pointer;">
+                <p class="fw-bold mb-1">Drag & drop PDF here</p>
+                <p class="text-muted small">or click to browse</p>
 
-                <button class="btn btn-primary w-100 py-2">📊 Convert to Excel</button>
-            </form>
-
-            {% if share_url %}
-            <hr class="my-4">
-            <div class="text-center">
-                <h5 class="fw-bold mb-2">✅ Conversion Completed</h5>
-                <input type="text" class="form-control mb-3 text-center" value="{{ share_url }}" readonly>
-                <div class="d-grid gap-2">
-                    <a href="{{ share_url }}" target="_blank" class="btn btn-outline-primary">👁 View Excel</a>
-                    <a href="{{ share_url }}?download=1" class="btn btn-outline-dark">⬇ Download Excel</a>
-                </div>
+                <input type="file"
+                       name="file"
+                       id="fileInput"
+                       accept=".pdf"
+                       required
+                       hidden>
             </div>
-            {% endif %}
+
+            <div id="fileName" class="small text-muted mb-3"></div>
+
+            <!-- Password (optional) -->
+            <div class="mb-3">
+                <label class="form-label">PDF Password (if encrypted)</label>
+                <input type="text"
+                       name="password"
+                       class="form-control"
+                       placeholder="Optional">
+            </div>
+
+            <button class="btn btn-primary w-100 py-2">
+                📊 Convert to Excel
+            </button>
+        </form>
+
+        <!-- Share Section -->
+        {% if share_url %}
+        <hr class="my-4">
+
+        <div class="text-center">
+            <h5 class="fw-bold mb-2">✅ Conversion Completed</h5>
+            <p class="text-muted small">
+                Output is an Excel (.xlsx) file
+            </p>
+
+            <input type="text"
+                   class="form-control mb-3 text-center"
+                   value="{{ share_url }}"
+                   readonly
+                   id="shareLink">
+
+            <div class="d-grid gap-2">
+                <a href="{{ share_url }}"
+                   target="_blank"
+                   class="btn btn-outline-primary">
+                    👁 View File
+                </a>
+
+                <a href="{{ share_url }}?download=1"
+                   class="btn btn-outline-dark">
+                    ⬇ Download Excel
+                </a>
+            </div>
+
+            <button class="btn btn-secondary w-100 mt-2" onclick="copyLink()">
+                📋 Copy Link
+            </button>
         </div>
+        {% endif %}
+
     </div>
 </div>
 
@@ -41,12 +87,38 @@
 const dropZone = document.getElementById("dropZone");
 const fileInput = document.getElementById("fileInput");
 const fileName = document.getElementById("fileName");
-dropZone.addEventListener("click", () => fileInput.click());
-dropZone.addEventListener("dragover", (e) => { e.preventDefault(); dropZone.classList.add("bg-light"); });
-dropZone.addEventListener("dragleave", () => dropZone.classList.remove("bg-light"));
-dropZone.addEventListener("drop", (e) => { e.preventDefault(); dropZone.classList.remove("bg-light"); fileInput.files = e.dataTransfer.files; showFile(); });
-fileInput.addEventListener("change", showFile);
-function showFile() { if (fileInput.files.length > 0) fileName.innerHTML = "Selected file: " + fileInput.files[0].name; }
-</script>
 
+dropZone.addEventListener("click", () => fileInput.click());
+
+dropZone.addEventListener("dragover", e => {
+    e.preventDefault();
+    dropZone.classList.add("bg-light");
+});
+
+dropZone.addEventListener("dragleave", () => {
+    dropZone.classList.remove("bg-light");
+});
+
+dropZone.addEventListener("drop", e => {
+    e.preventDefault();
+    dropZone.classList.remove("bg-light");
+    fileInput.files = e.dataTransfer.files;
+    showFile();
+});
+
+fileInput.addEventListener("change", showFile);
+
+function showFile() {
+    if (fileInput.files.length > 0) {
+        fileName.innerHTML = "Selected file: " + fileInput.files[0].name;
+    }
+}
+
+function copyLink() {
+    const link = document.getElementById("shareLink");
+    link.select();
+    navigator.clipboard.writeText(link.value);
+    alert("Link copied!");
+}
+</script>
 {% endblock %}

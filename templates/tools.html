@@ -2,120 +2,145 @@
 {% block title %}All PDF Tools{% endblock %}
 
 {% block content %}
+<div class="container">
 
-<div class="text-center mb-5">
-    <h1 class="fw-bold">Every tool you need to work with PDFs</h1>
-    <p class="text-muted">
-        Merge, split, compress, convert, and secure your PDFs in one place
-    </p>
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">All File Conversion Tools</h2>
+        <p class="text-muted">Convert, compress, split, and manage your documents</p>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- MERGE -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm rounded-4">
+                <div class="card-body text-center">
+                    <h5 class="fw-bold">📎 Merge PDF</h5>
+                    <p class="text-muted small">Combine multiple PDFs</p>
+                    <a href="{% url 'merge' %}" class="btn btn-outline-primary w-100">
+                        Open
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- SPLIT -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm rounded-4">
+                <div class="card-body text-center">
+                    <h5 class="fw-bold">✂️ Split PDF</h5>
+                    <p class="text-muted small">Extract selected pages</p>
+                    <a href="{% url 'split' %}" class="btn btn-outline-primary w-100">
+                        Open
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPRESS -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm rounded-4">
+                <div class="card-body text-center">
+                    <h5 class="fw-bold">🗜 Compress PDF</h5>
+                    <p class="text-muted small">Reduce PDF file size</p>
+                    <a href="{% url 'compress' %}" class="btn btn-outline-primary w-100">
+                        Open
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- PDF TO WORD -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm rounded-4">
+                <div class="card-body text-center">
+                    <h5 class="fw-bold">📄 PDF to Word</h5>
+                    <p class="text-muted small">Convert PDF to DOCX</p>
+                    <a href="{% url 'pdf_to_word' %}" class="btn btn-outline-primary w-100">
+                        Open
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- WORD TO PDF -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm rounded-4">
+                <div class="card-body text-center">
+                    <h5 class="fw-bold">📝 Word to PDF</h5>
+                    <p class="text-muted small">DOCX → PDF</p>
+                    <a href="{% url 'word_to_pdf' %}" class="btn btn-outline-primary w-100">
+                        Open
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- IMAGE TO PDF -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm rounded-4">
+                <div class="card-body text-center">
+                    <h5 class="fw-bold">🖼 Image to PDF</h5>
+                    <p class="text-muted small">JPG / PNG → PDF</p>
+                    <a href="{% url 'image_to_pdf' %}" class="btn btn-outline-primary w-100">
+                        Open
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- PDF TO IMAGE -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm rounded-4">
+                <div class="card-body text-center">
+                    <h5 class="fw-bold">🖼 PDF to Image</h5>
+                    <p class="text-muted small">PDF → PNG images</p>
+                    <a href="{% url 'pdf_to_image' %}" class="btn btn-outline-primary w-100">
+                        Open
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- PDF TO EXCEL -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm rounded-4">
+                <div class="card-body text-center">
+                    <h5 class="fw-bold">📊 PDF to Excel</h5>
+                    <p class="text-muted small">Extract tables</p>
+                    <a href="{% url 'pdf_to_excel' %}" class="btn btn-outline-primary w-100">
+                        Open
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXCEL TO PDF -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm rounded-4">
+                <div class="card-body text-center">
+                    <h5 class="fw-bold">📈 Excel to PDF</h5>
+                    <p class="text-muted small">XLSX → PDF</p>
+                    <a href="{% url 'excel_to_pdf' %}" class="btn btn-outline-primary w-100">
+                        Open
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- UNLOCK PDF -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm rounded-4">
+                <div class="card-body text-center">
+                    <h5 class="fw-bold">🔓 Unlock PDF</h5>
+                    <p class="text-muted small">Remove password</p>
+                    <a href="{% url 'unlock_pdf_view' %}" class="btn btn-outline-primary w-100">
+                        Open
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
-
-<div class="row g-4">
-
-    <!-- MERGE -->
-    <div class="col-md-3">
-        <a href="{% url 'merge' %}" class="text-decoration-none text-dark">
-            <div class="tool-card p-4 text-center h-100">
-                <div class="tool-icon text-danger mb-3">
-                    <i class="bi bi-file-earmark-plus"></i>
-                </div>
-                <h6 class="fw-bold">Merge PDF</h6>
-                <p class="text-muted small">Combine PDFs in the order you want</p>
-            </div>
-        </a>
-    </div>
-
-    <!-- SPLIT -->
-    <div class="col-md-3">
-        <a href="{% url 'split' %}" class="text-decoration-none text-dark">
-            <div class="tool-card p-4 text-center h-100">
-                <div class="tool-icon text-warning mb-3">
-                    <i class="bi bi-scissors"></i>
-                </div>
-                <h6 class="fw-bold">Split PDF</h6>
-                <p class="text-muted small">Extract pages from a PDF</p>
-            </div>
-        </a>
-    </div>
-
-    <!-- COMPRESS -->
-    <div class="col-md-3">
-        <a href="{% url 'compress' %}" class="text-decoration-none text-dark">
-            <div class="tool-card p-4 text-center h-100">
-                <div class="tool-icon text-success mb-3">
-                    <i class="bi bi-file-zip"></i>
-                </div>
-                <h6 class="fw-bold">Compress PDF</h6>
-                <p class="text-muted small">Reduce file size</p>
-            </div>
-        </a>
-    </div>
-
-    <!-- PDF TO WORD -->
-    <div class="col-md-3">
-        <a href="{% url 'pdf_to_word' %}" class="text-decoration-none text-dark">
-            <div class="tool-card p-4 text-center h-100">
-                <div class="tool-icon text-primary mb-3">
-                    <i class="bi bi-filetype-docx"></i>
-                </div>
-                <h6 class="fw-bold">PDF to Word</h6>
-                <p class="text-muted small">Convert PDF to DOCX</p>
-            </div>
-        </a>
-    </div>
-
-    <!-- PDF TO EXCEL -->
-    <div class="col-md-3">
-        <a href="{% url 'pdf_to_excel' %}" class="text-decoration-none text-dark">
-            <div class="tool-card p-4 text-center h-100">
-                <div class="tool-icon text-success mb-3">
-                    <i class="bi bi-filetype-xlsx"></i>
-                </div>
-                <h6 class="fw-bold">PDF to Excel</h6>
-                <p class="text-muted small">Extract tables from PDF</p>
-            </div>
-        </a>
-    </div>
-
-    <!-- EXCEL TO PDF -->
-    <div class="col-md-3">
-        <a href="{% url 'excel_to_pdf' %}" class="text-decoration-none text-dark">
-            <div class="tool-card p-4 text-center h-100">
-                <div class="tool-icon text-success mb-3">
-                    <i class="bi bi-table"></i>
-                </div>
-                <h6 class="fw-bold">Excel to PDF</h6>
-                <p class="text-muted small">Convert spreadsheets</p>
-            </div>
-        </a>
-    </div>
-
-    <!-- IMAGE TO PDF -->
-    <div class="col-md-3">
-        <a href="{% url 'image_to_pdf' %}" class="text-decoration-none text-dark">
-            <div class="tool-card p-4 text-center h-100">
-                <div class="tool-icon text-info mb-3">
-                    <i class="bi bi-image"></i>
-                </div>
-                <h6 class="fw-bold">Image to PDF</h6>
-                <p class="text-muted small">JPG, PNG to PDF</p>
-            </div>
-        </a>
-    </div>
-
-    <!-- UNLOCK -->
-    <div class="col-md-3">
-        <a href="{% url 'unlock_pdf_view' %}" class="text-decoration-none text-dark">
-            <div class="tool-card p-4 text-center h-100">
-                <div class="tool-icon text-secondary mb-3">
-                    <i class="bi bi-unlock"></i>
-                </div>
-                <h6 class="fw-bold">Unlock PDF</h6>
-                <p class="text-muted small">Remove password protection</p>
-            </div>
-        </a>
-    </div>
-
-</div>
-
 {% endblock %}

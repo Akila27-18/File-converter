@@ -1,75 +1,97 @@
 {% extends "base.html" %}
+{% block title %}My Documents{% endblock %}
+
 {% block content %}
+<div class="container mt-5">
 
-<div class="text-center mb-5">
-    <h2 class="fw-bold">PDF Tools</h2>
-    <p class="text-muted">
-        Convert, compress, merge, split, and manage your documents
-    </p>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold">📁 My Documents</h4>
+        <span class="text-muted small">
+            Files auto-expire based on your plan
+        </span>
+    </div>
+
+    {% if files %}
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>File</th>
+                        <th>Created</th>
+                        <th>Expires</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for file in files %}
+                    <tr>
+                        <td>
+                            <div class="fw-semibold">
+                                {{ file.file.name|slice:"15:" }}
+                            </div>
+                            <small class="text-muted">
+                                {{ file.file.size|filesizeformat }}
+                            </small>
+                        </td>
+
+                        <td>
+                            {{ file.created_at|date:"M d, Y" }}
+                        </td>
+
+                        <td>
+                            {% if file.expire_at > now %}
+                                <span class="badge bg-success">
+                                    {{ file.expire_at|timeuntil }} left
+                                </span>
+                            {% else %}
+                                <span class="badge bg-danger">
+                                    Expired
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm">
+
+                                <a href="{% url 'view_pdf' file.token %}"
+                                   class="btn btn-outline-primary"
+                                   target="_blank">
+                                    👁
+                                </a>
+
+                                <a href="{% url 'download_pdf' file.token %}"
+                                   class="btn btn-outline-dark">
+                                    ⬇
+                                </a>
+
+                                <a href="{% url 'share_file' file.token %}"
+                                   class="btn btn-outline-success">
+                                    🔗
+                                </a>
+
+                                <a href="{% url 'delete_pdf' file.token %}"
+                                   class="btn btn-outline-danger"
+                                   onclick="return confirm('Delete this file?');">
+                                    🗑
+                                </a>
+
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center text-muted mt-5">
+        <p>No files yet.</p>
+        <a href="{% url 'tools' %}" class="btn btn-primary">
+            Start Converting
+        </a>
+    </div>
+    {% endif %}
+
 </div>
-
-<div class="row g-4">
-
-    <!-- PDF ACTIONS -->
-    <div class="col-md-4">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body text-center">
-                <h5 class="fw-bold">PDF Actions</h5>
-                <p class="text-muted small">Edit & optimize PDFs</p>
-
-                <a href="{% url 'merge' %}" class="btn btn-outline-primary w-100 mb-2">
-                    ➕ Merge PDF
-                </a>
-                <a href="{% url 'split' %}" class="btn btn-outline-primary w-100 mb-2">
-                    ✂️ Split PDF
-                </a>
-                <a href="{% url 'compress' %}" class="btn btn-outline-primary w-100">
-                    🗜 Compress PDF
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- CONVERSIONS -->
-    <div class="col-md-4">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body text-center">
-                <h5 class="fw-bold">Convert</h5>
-                <p class="text-muted small">Change file formats</p>
-
-                <a href="{% url 'pdf_to_word' %}" class="btn btn-outline-success w-100 mb-2">
-                    📄 PDF → Word
-                </a>
-                <a href="{% url 'pdf_to_excel' %}" class="btn btn-outline-success w-100 mb-2">
-                    📊 PDF → Excel
-                </a>
-                <a href="{% url 'pdf_to_image' %}" class="btn btn-outline-success w-100">
-                    🖼 PDF → Images
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- OTHER -->
-    <div class="col-md-4">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-body text-center">
-                <h5 class="fw-bold">More Tools</h5>
-                <p class="text-muted small">Extra utilities</p>
-
-                <a href="{% url 'image_to_pdf' %}" class="btn btn-outline-dark w-100 mb-2">
-                    🖼 Image → PDF
-                </a>
-                <a href="{% url 'word_to_pdf' %}" class="btn btn-outline-dark w-100 mb-2">
-                    📝 Word → PDF
-                </a>
-                <a href="{% url 'unlock_pdf_view' %}" class="btn btn-outline-dark w-100">
-                    🔓 Unlock PDF
-                </a>
-            </div>
-        </div>
-    </div>
-
-</div>
-
 {% endblock %}

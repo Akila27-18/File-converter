@@ -1,57 +1,131 @@
 {% extends "base.html" %}
+{% block title %}Image to PDF{% endblock %}
+
 {% block content %}
+<div class="container mt-5" style="max-width:650px">
+    <div class="card shadow-sm rounded-4 p-4">
+        <h4 class="fw-bold mb-3 text-center">🖼 Image to PDF</h4>
+        <p class="text-muted text-center mb-4">
+            Convert JPG, PNG images into a single PDF document
+        </p>
 
-<div class="container" style="max-width: 650px;">
-    <div class="text-center mb-4">
-        <h3 class="fw-bold">🖼 Image → PDF</h3>
-        <p class="text-muted">Convert images (JPG, PNG, etc.) to PDF</p>
-    </div>
+        <!-- Upload Form -->
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
 
-    <div class="card shadow-sm border-0 rounded-4">
-        <div class="card-body p-4">
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div id="dropZone" class="border border-2 border-dashed rounded-4 p-4 text-center mb-3" style="cursor:pointer;">
-                    <p class="fw-bold mb-1">Drag & drop images here</p>
-                    <p class="text-muted small">or click to select files</p>
-                    <input type="file" name="files" id="fileInput" accept="image/*" multiple required hidden>
-                </div>
+            <!-- Drag & Drop -->
+            <div id="dropZone"
+                 class="border border-2 border-dashed rounded-4 p-4 text-center mb-3"
+                 style="cursor:pointer;">
+                <p class="fw-bold mb-1">Drag & drop images here</p>
+                <p class="text-muted small">or click to browse</p>
 
-                <div id="fileName" class="small text-muted mb-3"></div>
-
-                <button class="btn btn-primary w-100 py-2">📄 Convert to PDF</button>
-            </form>
-
-            {% if share_url %}
-            <hr class="my-4">
-            <div class="text-center">
-                <h5 class="fw-bold mb-2">✅ Conversion Completed</h5>
-                <input type="text" class="form-control mb-3 text-center" value="{{ share_url }}" readonly>
-                <div class="d-grid gap-2">
-                    <a href="{{ share_url }}" target="_blank" class="btn btn-outline-primary">👁 View PDF</a>
-                    <a href="{{ share_url }}?download=1" class="btn btn-outline-dark">⬇ Download PDF</a>
-                </div>
+                <input type="file"
+                       name="files"
+                       id="fileInput"
+                       accept="image/*"
+                       multiple
+                       required
+                       hidden>
             </div>
-            {% endif %}
+
+            <div id="fileList" class="small text-muted mb-3"></div>
+
+            <!-- Page Size -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Page Size</label>
+                <select name="page_size" class="form-select">
+                    <option value="A4">A4</option>
+                    <option value="Letter">Letter</option>
+                    <option value="Auto">Auto (fit images)</option>
+                </select>
+            </div>
+
+            <!-- Orientation -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Orientation</label>
+                <select name="orientation" class="form-select">
+                    <option value="portrait">Portrait</option>
+                    <option value="landscape">Landscape</option>
+                </select>
+            </div>
+
+            <button class="btn btn-primary w-100 py-2">
+                🖼 Convert to PDF
+            </button>
+        </form>
+
+        <!-- Share Section -->
+        {% if share_url %}
+        <hr class="my-4">
+
+        <div class="text-center">
+            <h5 class="fw-bold mb-2">✅ PDF Created Successfully</h5>
+
+            <input type="text"
+                   class="form-control mb-3 text-center"
+                   value="{{ share_url }}"
+                   readonly
+                   id="shareLink">
+
+            <div class="d-grid gap-2">
+                <a href="{{ share_url }}"
+                   target="_blank"
+                   class="btn btn-outline-primary">
+                    👁 View PDF
+                </a>
+
+                <a href="{{ share_url }}?download=1"
+                   class="btn btn-outline-dark">
+                    ⬇ Download PDF
+                </a>
+            </div>
+
+            <button class="btn btn-secondary w-100 mt-2" onclick="copyLink()">
+                📋 Copy Link
+            </button>
         </div>
+        {% endif %}
     </div>
 </div>
 
 <script>
 const dropZone = document.getElementById("dropZone");
 const fileInput = document.getElementById("fileInput");
-const fileName = document.getElementById("fileName");
+const fileList = document.getElementById("fileList");
+
 dropZone.addEventListener("click", () => fileInput.click());
-dropZone.addEventListener("dragover", (e) => { e.preventDefault(); dropZone.classList.add("bg-light"); });
-dropZone.addEventListener("dragleave", () => dropZone.classList.remove("bg-light"));
-dropZone.addEventListener("drop", (e) => { e.preventDefault(); dropZone.classList.remove("bg-light"); fileInput.files = e.dataTransfer.files; showFile(); });
-fileInput.addEventListener("change", showFile);
-function showFile() { 
-    if (fileInput.files.length > 0) {
-        const names = Array.from(fileInput.files).map(f => f.name).join(", ");
-        fileName.innerHTML = "Selected files: " + names;
-    }
+
+dropZone.addEventListener("dragover", e => {
+    e.preventDefault();
+    dropZone.classList.add("bg-light");
+});
+
+dropZone.addEventListener("dragleave", () => {
+    dropZone.classList.remove("bg-light");
+});
+
+dropZone.addEventListener("drop", e => {
+    e.preventDefault();
+    dropZone.classList.remove("bg-light");
+    fileInput.files = e.dataTransfer.files;
+    showFiles();
+});
+
+fileInput.addEventListener("change", showFiles);
+
+function showFiles() {
+    fileList.innerHTML = "";
+    Array.from(fileInput.files).forEach((file, i) => {
+        fileList.innerHTML += `${i + 1}. ${file.name}<br>`;
+    });
+}
+
+function copyLink() {
+    const link = document.getElementById("shareLink");
+    link.select();
+    navigator.clipboard.writeText(link.value);
+    alert("Link copied!");
 }
 </script>
-
 {% endblock %}

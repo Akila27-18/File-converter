@@ -3,11 +3,11 @@ from . import views
 
 urlpatterns = [
     path("", views.tools, name="tools"),
-
     path("pricing/", views.pricing, name="pricing"),
 
     path("merge/", views.merge, name="merge"),
-    path("split/", views.split, name="split"),
+    path("split/", views.split_pdf_view, name="split"),
+    
     path("compress/", views.compress, name="compress"),
 
     path("pdf-to-word/", views.pdf_to_word, name="pdf_to_word"),
@@ -20,7 +20,6 @@ urlpatterns = [
 
     path("pdf-to-excel/", views.pdf_to_excel, name="pdf_to_excel"),
     path("excel-to-pdf/", views.excel_to_pdf, name="excel_to_pdf"),
-
 
     path("view/<uuid:token>/", views.view_pdf, name="view_pdf"),
     path("download/<uuid:token>/", views.download_pdf, name="download_pdf"),

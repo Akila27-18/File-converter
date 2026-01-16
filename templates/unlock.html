@@ -1,71 +1,48 @@
 {% extends "base.html" %}
-{% block content %}
+{% block title %}Unlock PDF{% endblock %}
 
+{% block content %}
 <div class="container" style="max-width: 600px;">
 
     <div class="text-center mb-4">
         <h3 class="fw-bold">🔓 Unlock PDF</h3>
-        <p class="text-muted">
-            Remove password protection from your PDF file
-        </p>
+        <p class="text-muted">Remove password protection from your PDF file</p>
     </div>
 
     <div class="card shadow-sm border-0 rounded-4">
         <div class="card-body p-4">
 
-            <!-- DRAG & DROP -->
             <form method="post" enctype="multipart/form-data" id="uploadForm">
                 {% csrf_token %}
 
-                <div id="dropZone"
-                     class="border border-2 border-dashed rounded-4 p-4 text-center mb-3"
-                     style="cursor:pointer;">
+                <!-- Drag & Drop PDF Upload -->
+                <div id="dropZone" class="border border-2 border-dashed rounded-4 p-4 text-center mb-3" style="cursor:pointer;">
                     <p class="fw-bold mb-1">Drag & drop your PDF here</p>
                     <p class="text-muted small mb-2">or click to browse</p>
 
-                    <input type="file"
-                           name="file"
-                           id="fileInput"
-                           accept=".pdf"
-                           required
-                           hidden>
+                    <input type="file" name="file" id="fileInput" accept=".pdf" required hidden>
                 </div>
 
+                <!-- PDF Password -->
                 <div class="mb-3">
-                    <label class="form-label">PDF Password (if any)</label>
-                    <input type="text"
-                           name="password"
-                           class="form-control"
-                           placeholder="Optional">
+                    <label class="form-label">PDF Password (optional)</label>
+                    <input type="text" name="password" class="form-control" placeholder="Enter password if protected">
                 </div>
 
-                <button class="btn btn-primary w-100 py-2">
-                    🔓 Unlock PDF
-                </button>
+                <button type="submit" class="btn btn-primary w-100 py-2">🔓 Unlock PDF</button>
             </form>
 
+            <!-- Share Section -->
             {% if share_url %}
             <hr class="my-4">
-
             <div class="text-center">
                 <h5 class="fw-bold mb-2">✅ PDF Unlocked</h5>
 
-                <input type="text"
-                       class="form-control mb-3 text-center"
-                       value="{{ share_url }}"
-                       readonly>
+                <input type="text" class="form-control mb-3 text-center" value="{{ share_url }}" readonly>
 
                 <div class="d-grid gap-2">
-                    <a href="{{ share_url }}"
-                       target="_blank"
-                       class="btn btn-outline-primary">
-                        👁 View PDF
-                    </a>
-
-                    <a href="{{ share_url }}?download=1"
-                       class="btn btn-outline-dark">
-                        ⬇ Download PDF
-                    </a>
+                    <a href="{{ share_url }}" target="_blank" class="btn btn-outline-primary">👁 View PDF</a>
+                    <a href="{{ share_url }}?download=1" class="btn btn-outline-dark">⬇ Download PDF</a>
                 </div>
             </div>
             {% endif %}
@@ -79,22 +56,25 @@
 const dropZone = document.getElementById("dropZone");
 const fileInput = document.getElementById("fileInput");
 
+// Click to open file browser
 dropZone.addEventListener("click", () => fileInput.click());
 
+// Drag over
 dropZone.addEventListener("dragover", (e) => {
     e.preventDefault();
     dropZone.classList.add("bg-light");
 });
 
+// Drag leave
 dropZone.addEventListener("dragleave", () => {
     dropZone.classList.remove("bg-light");
 });
 
+// Drop file
 dropZone.addEventListener("drop", (e) => {
     e.preventDefault();
     dropZone.classList.remove("bg-light");
     fileInput.files = e.dataTransfer.files;
 });
 </script>
-
 {% endblock %}

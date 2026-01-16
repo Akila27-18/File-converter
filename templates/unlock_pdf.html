@@ -1,44 +1,53 @@
 {% extends "base.html" %}
-{% block content %}
+{% block title %}Unlock PDF{% endblock %}
 
+{% block content %}
 <div class="container mt-5" style="max-width:600px">
     <div class="card shadow-sm rounded-4 p-4">
-        <h4 class="fw-bold mb-3 text-center">Unlock PDF</h4>
-        <p class="text-muted text-center mb-4">
-            Remove password protection from your PDF
-        </p>
+        <h4 class="fw-bold mb-3 text-center">🔓 Unlock PDF</h4>
+        <p class="text-muted text-center mb-4">Remove password protection from your PDF</p>
 
+        <!-- Upload Form -->
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
+
+            <!-- Drag & Drop -->
+            <div id="dropZone" class="border border-2 border-dashed rounded-4 p-4 text-center mb-3" style="cursor:pointer;">
+                <p class="fw-bold mb-1">Drag & drop your PDF here</p>
+                <p class="text-muted small">or click to browse</p>
+                <input type="file" name="file" id="fileInput" accept=".pdf" required hidden>
+            </div>
+            <div id="fileName" class="small text-muted mb-3"></div>
+
+            <!-- Password Input -->
             <div class="mb-3">
-                <label class="form-label">Select PDF file</label>
-                <input type="file" name="file" class="form-control" accept=".pdf" required>
+                <label class="form-label">Password (optional)</label>
+                <input type="text" name="password" class="form-control" placeholder="If PDF is encrypted">
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Password (if PDF is encrypted)</label>
-                <input type="text" name="password" class="form-control" placeholder="Optional">
-            </div>
-
-            <button class="btn btn-primary w-100 py-2">Unlock PDF</button>
+            <button type="submit" class="btn btn-primary w-100 py-2">🔓 Unlock PDF</button>
         </form>
 
+        <!-- Share Section -->
         {% if share_url %}
         <div class="mt-4 text-center">
-            <h5 class="fw-bold">✅ PDF Unlocked!</h5>
-            <input type="text" class="form-control mb-2" value="{{ share_url }}" readonly>
+            <h5 class="fw-bold mb-2">✅ PDF Unlocked!</h5>
+
+            <input type="text" class="form-control mb-2 text-center" value="{{ share_url }}" readonly id="shareLink">
 
             <div class="d-grid gap-2 mb-2">
-                <a href="{{ share_url }}" target="_blank" class="btn btn-outline-primary">👁️ View</a>
-                <a href="{{ share_url }}?download=1" class="btn btn-outline-dark">⬇️ Download</a>
+                <a href="{{ share_url }}" target="_blank" class="btn btn-outline-primary">👁 View</a>
+                <a href="{{ share_url }}?download=1" class="btn btn-outline-dark">⬇ Download</a>
             </div>
 
+            <!-- Email Form -->
             <form method="post">
                 {% csrf_token %}
                 <input type="email" name="email" class="form-control mb-2" placeholder="Enter email address" required>
                 <button class="btn btn-success w-100">📧 Send via Email</button>
             </form>
 
+            <!-- Copy Link -->
             <button class="btn btn-secondary w-100 mt-2" onclick="copyLink()">📋 Copy Link</button>
         </div>
         {% endif %}
@@ -46,13 +55,42 @@
 </div>
 
 <script>
+// Drag & Drop
+const dropZone = document.getElementById("dropZone");
+const fileInput = document.getElementById("fileInput");
+const fileName = document.getElementById("fileName");
+
+dropZone.addEventListener("click", () => fileInput.click());
+
+dropZone.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropZone.classList.add("bg-light");
+});
+
+dropZone.addEventListener("dragleave", () => dropZone.classList.remove("bg-light"));
+
+dropZone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropZone.classList.remove("bg-light");
+    fileInput.files = e.dataTransfer.files;
+    showFile();
+});
+
+fileInput.addEventListener("change", showFile);
+
+function showFile() {
+    if (fileInput.files.length > 0) {
+        fileName.textContent = "Selected file: " + fileInput.files[0].name;
+    }
+}
+
+// Copy link
 function copyLink() {
-  const copyText = document.querySelector('input[readonly]');
-  copyText.select();
-  copyText.setSelectionRange(0, 99999);
-  navigator.clipboard.writeText(copyText.value);
-  alert("Link copied to clipboard!");
+    const copyText = document.getElementById("shareLink");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(copyText.value);
+    alert("Link copied to clipboard!");
 }
 </script>
-
 {% endblock %}

@@ -2,74 +2,92 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-
 <div class="container mt-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold">📊 Dashboard – My Documents</h3>
+    <!-- HEADER -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold mb-2 mb-md-0">
+            📊 Dashboard – My Documents
+        </h3>
         <a href="{% url 'tools' %}" class="btn btn-outline-primary">
-            Go to Tools
+            🔧 Go to Tools
         </a>
     </div>
 
     {% if files %}
     <div class="card shadow-sm border-0 rounded-4">
         <div class="card-body p-0">
-            <table class="table align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>File</th>
-                        <th>Status</th>
-                        <th>Created</th>
-                        <th class="text-end">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for file in files %}
-                    <tr>
-                        <td class="fw-semibold">
-                            {{ file.file.name|slice:"15:" }}
-                        </td>
 
-                        <td>
-                            {% if file.expire_at < now %}
-                                <span class="badge bg-danger">Expired</span>
-                            {% else %}
-                                <span class="badge bg-success">Active</span>
-                            {% endif %}
-                        </td>
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>File</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for file in files %}
+                        <tr>
+                            <!-- FILE NAME -->
+                            <td class="fw-semibold text-truncate" style="max-width:220px;">
+                                {{ file.file.name|cut:"shared/" }}
+                            </td>
 
-                        <td>
-                            {{ file.created_at|date:"M d, Y H:i" }}
-                        </td>
+                            <!-- STATUS -->
+                            <td>
+                                {% if file.expire_at and file.expire_at < now %}
+                                    <span class="badge bg-danger">Expired</span>
+                                {% else %}
+                                    <span class="badge bg-success">Active</span>
+                                {% endif %}
+                            </td>
 
-                        <td class="text-end">
-                            <a href="{% url 'share_file' file.token %}"
-                               class="btn btn-sm btn-outline-success">
-                                Share
-                            </a>
+                            <!-- CREATED -->
+                            <td>
+                                {{ file.created_at|date:"M d, Y H:i" }}
+                            </td>
 
-                            <a href="{% url 'share_file' file.token %}?download=1"
-                               class="btn btn-sm btn-outline-primary">
-                                Download
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                            <!-- ACTIONS -->
+                            <td class="text-end">
+                                <a href="{% url 'share_file' file.token %}"
+                                   class="btn btn-sm btn-outline-success">
+                                    🔗 Share
+                                </a>
+
+                                <a href="{% url 'share_file' file.token %}?download=1"
+                                   class="btn btn-sm btn-outline-primary">
+                                    ⬇ Download
+                                </a>
+
+                                <a href="{% url 'delete_pdf' file.token %}"
+                                   class="btn btn-sm btn-outline-danger"
+                                   onclick="return confirm('Delete this file?')">
+                                    🗑 Delete
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
         </div>
     </div>
     {% else %}
+    <!-- EMPTY STATE -->
     <div class="alert alert-info text-center p-5 rounded-4">
-        <h5>No documents yet</h5>
-        <p class="mb-3">Your converted files will appear here.</p>
+        <h5 class="fw-bold">No documents yet</h5>
+        <p class="mb-3">
+            Your converted or shared files will appear here.
+        </p>
         <a href="{% url 'tools' %}" class="btn btn-primary">
-            Start Using Tools
+            🚀 Start Using Tools
         </a>
     </div>
     {% endif %}
 
 </div>
-
 {% endblock %}

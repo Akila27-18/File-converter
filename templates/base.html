@@ -1,69 +1,113 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>File Converter</title>
+    <title>{% block title %}File Converter{% endblock %}</title>
 
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-    <style>
-        body {
-            background: #f8f9fa;
-        }
-        .drop-zone {
-            border: 2px dashed #0d6efd;
-            border-radius: 12px;
-            padding: 40px;
-            text-align: center;
-            background: #fff;
-            cursor: pointer;
-        }
-        .drop-zone.dragover {
-            background: #e9f2ff;
-        }
-    </style>
-</head>
-<body>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-light">
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
     <div class="container">
+
+        <!-- LOGO -->
         <a class="navbar-brand fw-bold" href="{% url 'tools' %}">
-            File Converter
+            📄 FileConverter
         </a>
 
-        <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
+        <!-- TOGGLER -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div id="nav" class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto gap-2">
+        <!-- NAV ITEMS -->
+        <div class="collapse navbar-collapse" id="mainNav">
+
+            <!-- LEFT MENU -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'tools' %}">Tools</a>
                 </li>
 
+                <!-- PDF TOOLS DROPDOWN -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        PDF Tools
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'merge' %}">Merge PDF</a></li>
+                        <li><a class="dropdown-item" href="{% url 'split' %}">Split PDF</a></li>
+                        <li><a class="dropdown-item" href="{% url 'compress' %}">Compress PDF</a></li>
+                        <li><a class="dropdown-item" href="{% url 'unlock_pdf_view' %}">Unlock PDF</a></li>
+                    </ul>
+                </li>
+
+                <!-- CONVERSIONS DROPDOWN -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        Convert
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'pdf_to_word' %}">PDF → Word</a></li>
+                        <li><a class="dropdown-item" href="{% url 'word_to_pdf' %}">Word → PDF</a></li>
+                        <li><a class="dropdown-item" href="{% url 'pdf_to_image' %}">PDF → Image</a></li>
+                        <li><a class="dropdown-item" href="{% url 'image_to_pdf' %}">Image → PDF</a></li>
+                        <li><a class="dropdown-item" href="{% url 'pdf_to_excel' %}">PDF → Excel</a></li>
+                        <li><a class="dropdown-item" href="{% url 'excel_to_pdf' %}">Excel → PDF</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'pricing' %}">Pricing</a>
+                </li>
+
+            </ul>
+
+            <!-- RIGHT MENU -->
+            <ul class="navbar-nav ms-auto">
+
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'my_documents' %}">My Documents</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'pricing' %}">Pricing</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="btn btn-light btn-sm" href="{% url 'logout' %}">
-                            Logout
+                        <a class="nav-link" href="{% url 'dashboard' %}">
+                            <i class="bi bi-speedometer2"></i> Dashboard
                         </a>
+                    </li>
+
+                    <!-- USER DROPDOWN -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'my_documents' %}">My Documents</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="{% url 'logout' %}">
+                                    Logout
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="btn btn-light btn-sm" href="{% url 'login' %}">
-                            Login
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary ms-2" href="{% url 'signup' %}">
+                            Sign Up
                         </a>
                     </li>
                 {% endif %}
@@ -73,45 +117,43 @@
     </div>
 </nav>
 
-<div class="container py-5">
-
-    <!-- Messages -->
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
-                {{ message }}
-                <button class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        {% endfor %}
-    {% endif %}
-
-    {% block content %}{% endblock %}
+<!-- ================= MESSAGES ================= -->
+<div class="container mt-3">
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- ================= MAIN CONTENT ================= -->
+<main class="py-4">
+    {% block content %}{% endblock %}
+</main>
 
+<!-- ================= FOOTER ================= -->
+<footer class="bg-dark text-light text-center py-3 mt-auto">
+    <small>© {{ now|default:2026 }} FileConverter. All rights reserved.</small>
+</footer>
+
+<!-- ================= JS ================= -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Google Drive Picker Hook -->
 <script>
-    document.querySelectorAll(".drop-zone").forEach(zone => {
-        const input = zone.querySelector("input");
-
-        zone.addEventListener("click", () => input.click());
-
-        zone.addEventListener("dragover", e => {
-            e.preventDefault();
-            zone.classList.add("dragover");
-        });
-
-        zone.addEventListener("dragleave", () => {
-            zone.classList.remove("dragover");
-        });
-
-        zone.addEventListener("drop", e => {
-            e.preventDefault();
-            input.files = e.dataTransfer.files;
-            zone.classList.remove("dragover");
-        });
-    });
+    function openGoogleDrivePicker() {
+        alert("Google Drive Picker integration goes here");
+    }
 </script>
 
+<!-- Dropbox Chooser Hook -->
+<script>
+    function openDropboxChooser() {
+        alert("Dropbox Chooser integration goes here");
+    }
+</script>
+
+{% block extra_js %}{% endblock %}
 </body>
 </html>

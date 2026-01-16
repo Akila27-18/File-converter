@@ -1,53 +1,110 @@
 {% extends "base.html" %}
-{% block content %}
+{% block title %}Word to PDF{% endblock %}
 
-<div class="container mt-5" style="max-width:600px">
+{% block content %}
+<div class="container mt-5" style="max-width:650px">
     <div class="card shadow-sm rounded-4 p-4">
-        <h4 class="fw-bold mb-3 text-center">Word to PDF</h4>
+        <h4 class="fw-bold mb-3 text-center">📄 Word to PDF</h4>
         <p class="text-muted text-center mb-4">
-            Convert your Word document into a PDF file
+            Convert DOC or DOCX files into a high-quality PDF
         </p>
 
+        <!-- Upload Form -->
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="mb-3">
-                <label class="form-label">Select Word file</label>
-                <input type="file" name="file" class="form-control" accept=".docx" required>
+
+            <!-- Drag & Drop -->
+            <div id="dropZone"
+                 class="border border-2 border-dashed rounded-4 p-4 text-center mb-3"
+                 style="cursor:pointer;">
+                <p class="fw-bold mb-1">Drag & drop Word file here</p>
+                <p class="text-muted small">or click to browse</p>
+
+                <input type="file"
+                       name="file"
+                       id="fileInput"
+                       accept=".doc,.docx"
+                       required
+                       hidden>
             </div>
 
-            <button class="btn btn-primary w-100 py-2">Convert to PDF</button>
+            <div id="fileName" class="small text-muted mb-3"></div>
+
+            <button class="btn btn-primary w-100 py-2">
+                📄 Convert to PDF
+            </button>
         </form>
 
+        <!-- Share Section -->
         {% if share_url %}
-        <div class="mt-4 text-center">
-            <h5 class="fw-bold">Your PDF is ready!</h5>
-            <input type="text" class="form-control mb-2" value="{{ share_url }}" readonly>
+        <hr class="my-4">
 
-            <div class="d-grid gap-2 mb-2">
-                <a href="{{ share_url }}" target="_blank" class="btn btn-outline-primary">👁️ View</a>
-                <a href="{{ share_url }}?download=1" class="btn btn-outline-dark">⬇️ Download</a>
+        <div class="text-center">
+            <h5 class="fw-bold mb-2">✅ Conversion Completed</h5>
+
+            <input type="text"
+                   class="form-control mb-3 text-center"
+                   value="{{ share_url }}"
+                   readonly
+                   id="shareLink">
+
+            <div class="d-grid gap-2">
+                <a href="{{ share_url }}"
+                   target="_blank"
+                   class="btn btn-outline-primary">
+                    👁 View PDF
+                </a>
+
+                <a href="{{ share_url }}?download=1"
+                   class="btn btn-outline-dark">
+                    ⬇ Download PDF
+                </a>
             </div>
 
-            <form method="post">
-                {% csrf_token %}
-                <input type="email" name="email" class="form-control mb-2" placeholder="Enter email address" required>
-                <button class="btn btn-success w-100">📧 Send via Email</button>
-            </form>
-
-            <button class="btn btn-secondary w-100 mt-2" onclick="copyLink()">📋 Copy Link</button>
+            <button class="btn btn-secondary w-100 mt-2" onclick="copyLink()">
+                📋 Copy Link
+            </button>
         </div>
         {% endif %}
     </div>
 </div>
 
 <script>
+const dropZone = document.getElementById("dropZone");
+const fileInput = document.getElementById("fileInput");
+const fileName = document.getElementById("fileName");
+
+dropZone.addEventListener("click", () => fileInput.click());
+
+dropZone.addEventListener("dragover", e => {
+    e.preventDefault();
+    dropZone.classList.add("bg-light");
+});
+
+dropZone.addEventListener("dragleave", () => {
+    dropZone.classList.remove("bg-light");
+});
+
+dropZone.addEventListener("drop", e => {
+    e.preventDefault();
+    dropZone.classList.remove("bg-light");
+    fileInput.files = e.dataTransfer.files;
+    showFile();
+});
+
+fileInput.addEventListener("change", showFile);
+
+function showFile() {
+    if (fileInput.files.length > 0) {
+        fileName.innerHTML = "Selected file: " + fileInput.files[0].name;
+    }
+}
+
 function copyLink() {
-  const copyText = document.querySelector('input[readonly]');
-  copyText.select();
-  copyText.setSelectionRange(0, 99999);
-  navigator.clipboard.writeText(copyText.value);
-  alert("Link copied to clipboard!");
+    const link = document.getElementById("shareLink");
+    link.select();
+    navigator.clipboard.writeText(link.value);
+    alert("Link copied!");
 }
 </script>
-
 {% endblock %}

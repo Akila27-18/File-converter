@@ -1,22 +1,46 @@
 {% extends "base.html" %}
+{% block title %}Activate {{ plan|capfirst }} Plan{% endblock %}
+
 {% block content %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height:70vh">
 
-<h4 class="fw-bold mb-3">Activate {{ plan|capfirst }} Plan</h4>
+    <div class="col-md-5 col-lg-4">
 
-<form method="post" class="card p-4 shadow-sm rounded-4">
-  {% csrf_token %}
+        <h4 class="fw-bold mb-3 text-center">💳 Activate {{ plan|capfirst }} Plan</h4>
 
-  <input class="form-control mb-2" placeholder="Card Number" required>
-  <input class="form-control mb-2" placeholder="MM / YY" required>
-  <input class="form-control mb-2" placeholder="CVV" required>
+        <form method="post" class="card p-4 shadow-sm rounded-4">
+            {% csrf_token %}
 
-  <button class="btn btn-p w-100">
-    Pay & Activate
-  </button>
-</form>
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} py-2">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
 
-<p class="text-muted mt-2 small">
-  * Demo checkout (no real payment)
-</p>
+            <div class="mb-2">
+                <input type="text" class="form-control" placeholder="Card Number" required>
+            </div>
+            <div class="mb-2 row g-2">
+                <div class="col">
+                    <input type="text" class="form-control" placeholder="MM / YY" required>
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" placeholder="CVV" required>
+                </div>
+            </div>
 
+            <button class="btn btn-primary w-100 py-2 mt-3">
+                Pay & Activate
+            </button>
+        </form>
+
+        <p class="text-muted mt-2 small text-center">
+            * Demo checkout — no real payment is processed
+        </p>
+
+    </div>
+</div>
 {% endblock %}

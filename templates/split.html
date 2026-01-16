@@ -5,9 +5,7 @@
 
     <div class="text-center mb-4">
         <h3 class="fw-bold">✂️ Split PDF</h3>
-        <p class="text-muted">
-            Extract specific pages from a PDF file
-        </p>
+        <p class="text-muted">Extract specific pages from a PDF file</p>
     </div>
 
     <div class="card shadow-sm border-0 rounded-4">
@@ -17,66 +15,56 @@
                 {% csrf_token %}
 
                 <!-- PDF UPLOAD -->
-                <div id="dropZone"
-                     class="border border-2 border-dashed rounded-4 p-4 text-center mb-3"
-                     style="cursor:pointer;">
+                <div id="dropZone" class="border border-2 border-dashed rounded-4 p-4 text-center mb-3" style="cursor:pointer;">
                     <p class="fw-bold mb-1">Drag & drop a PDF here</p>
                     <p class="text-muted small">or click to select file</p>
-
-                    <input type="file"
-                           name="files"
-                           id="fileInput"
-                           accept=".pdf"
-                           required
-                           hidden>
+                    <input type="file" name="pdf_file" id="fileInput" accept=".pdf" required hidden>
                 </div>
-
-                <!-- PAGE RANGE -->
-                <div class="mb-3">
-                    <label class="form-label fw-bold">
-                        Pages to extract
-                    </label>
-                    <input type="text"
-                           name="pages"
-                           class="form-control"
-                           placeholder="Example: 1-3,5,8"
-                           required>
-                    <div class="form-text">
-                        Use commas and hyphens (1-3,5)
-                    </div>
-                </div>
-
                 <div id="fileName" class="small text-muted mb-3"></div>
 
-                <button class="btn btn-primary w-100 py-2">
-                    ✂️ Split PDF
-                </button>
+                <!-- SPLIT MODE -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Split Mode</label>
+                    <select name="split_mode" id="splitMode" class="form-select" required>
+                        <option value="fixed">Fixed Ranges</option>
+                        <option value="custom">Custom Ranges</option>
+                    </select>
+                </div>
+
+                <!-- FIXED RANGE -->
+                <div class="mb-3" id="fixedRangeDiv">
+                    <label class="form-label">Pages per file</label>
+                    <input type="number" name="range_size" class="form-control" placeholder="e.g., 3">
+                </div>
+
+                <!-- CUSTOM RANGE -->
+                <div class="mb-3 d-none" id="customRangeDiv">
+                    <label class="form-label">Custom Page Ranges</label>
+                    <input type="text" name="custom_ranges" class="form-control" placeholder="Example: 1-3,5,7">
+                    <div class="form-text">Use commas and hyphens (1-3,5,7)</div>
+                </div>
+
+                <button class="btn btn-primary w-100 py-2">✂️ Split PDF</button>
             </form>
 
-            {% if share_url %}
-            <hr class="my-4">
-
-            <div class="text-center">
-                <h5 class="fw-bold mb-2">✅ Split Completed</h5>
-
-                <input type="text"
-                       class="form-control mb-3 text-center"
-                       value="{{ share_url }}"
-                       readonly>
-
-                <div class="d-grid gap-2">
-                    <a href="{{ share_url }}"
-                       target="_blank"
-                       class="btn btn-outline-primary">
-                        👁 View PDF
-                    </a>
-
-                    <a href="{{ share_url }}?download=1"
-                       class="btn btn-outline-dark">
-                        ⬇ Download PDF
-                    </a>
+            <!-- MESSAGE -->
+            {% if message %}
+                <div class="alert alert-success mt-3">
+                    {{ message }}
                 </div>
-            </div>
+            {% endif %}
+
+            <!-- SPLIT FILE LINKS -->
+            {% if files %}
+                <hr class="my-4">
+                <div class="text-center">
+                    <h5 class="fw-bold mb-2">✅ Download Split PDFs</h5>
+                    {% for f in files %}
+                        <a href="file://{{ f }}" class="d-block mb-2 btn btn-outline-primary" download>
+                            📄 {{ f|slice:"-40:"|default:"PDF Part" }}
+                        </a>
+                    {% endfor %}
+                </div>
             {% endif %}
 
         </div>
@@ -114,6 +102,21 @@ function showFile() {
         fileName.innerHTML = "Selected file: " + fileInput.files[0].name;
     }
 }
+
+// Toggle between fixed/custom ranges
+const splitMode = document.getElementById("splitMode");
+const fixedDiv = document.getElementById("fixedRangeDiv");
+const customDiv = document.getElementById("customRangeDiv");
+
+splitMode.addEventListener("change", () => {
+    if (splitMode.value === "fixed") {
+        fixedDiv.classList.remove("d-none");
+        customDiv.classList.add("d-none");
+    } else {
+        fixedDiv.classList.add("d-none");
+        customDiv.classList.remove("d-none");
+    }
+});
 </script>
 
 {% endblock %}

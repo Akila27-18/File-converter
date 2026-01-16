@@ -1,19 +1,55 @@
 {% extends "base.html" %}
+{% block title %}Create Account{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-5">
-    <div class="card shadow border-0 rounded-4">
-      <div class="card-body p-4">
-        <h4 class="text-center fw-bold mb-4">Create Account</h4>
-        <form method="post">
-          {% csrf_token %}
-          <input class="form-control mb-3" name="username" placeholder="Username" required>
-          <input class="form-control mb-3" name="email" type="email" placeholder="Email" required>
-          <input class="form-control mb-3" name="password" type="password" placeholder="Password" required>
-          <button class="btn btn-primary-custom w-100">Sign Up</button>
-        </form>
-      </div>
+<div class="container d-flex justify-content-center align-items-center" style="min-height:70vh">
+
+    <div class="col-md-5 col-lg-4">
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-body p-4">
+
+                <h4 class="fw-bold text-center mb-3">👤 Create Account</h4>
+                <p class="text-muted text-center mb-4">
+                    Sign up to start using PDF tools
+                </p>
+
+                <!-- Display messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} py-2">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <input type="text" name="username" class="form-control" placeholder="Username" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="email" name="email" class="form-control" placeholder="Email" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="password" name="password" class="form-control" placeholder="Password" required>
+                    </div>
+
+                    <button class="btn btn-primary w-100 py-2">Sign Up</button>
+                </form>
+
+                <div class="text-center mt-3">
+                    <small class="text-muted">
+                        Already have an account?
+                        <a href="{% url 'login' %}" class="text-decoration-none">Login</a>
+                    </small>
+                </div>
+
+            </div>
+        </div>
     </div>
-  </div>
+
 </div>
 {% endblock %}
